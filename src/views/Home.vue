@@ -103,7 +103,7 @@
             ><v-icon>mdi-arrow-left</v-icon></v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn fab outlined @click="gotoNextImage"
+          <v-btn v-show='currentDate != date' fab outlined @click="gotoNextImage"
             ><v-icon>mdi-arrow-right</v-icon></v-btn
           >
         </v-row>
@@ -127,6 +127,7 @@ export default {
       currentDate: "",
       nextDate: "",
       previousDate: "",
+      startDate: "",
       currentDateRules: [
         (v) => !!v || "E-mail is required",
         (v) =>
@@ -140,6 +141,11 @@ export default {
     imageStyleObject() {
       return {
         backgroundImage: `url(${this.url})`,
+      };
+    },
+    returnDate() {
+      return {
+        date: moment(new Date()).format("YYYY-MM-DD"),
       };
     },
   },
