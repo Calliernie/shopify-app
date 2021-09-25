@@ -171,7 +171,7 @@ export default {
   },
   created: function () {
     var currentUrl = window.location.pathname;
-    console.log(currentUrl);
+    console.log(location.origin + currentUrl);
     // console.log(this.$route.query.page);
   },
   computed: {
