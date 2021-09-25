@@ -46,7 +46,7 @@
             :color="copied === true ? 'red' : 'white'"
             fab
             class="mx-2"
-            @click="copied === true ? copy : uncopy"
+            @click="copied === true ? uncopy() : copy()"
             ><v-icon :color="copied === true ? 'white' : 'red'"
               >mdi-share</v-icon
             ></v-btn
@@ -119,7 +119,7 @@
             :color="copied === true ? 'red' : 'white'"
             fab
             class="mx-2"
-            @click="copied === true ? copy : uncopy"
+            @click="copied === true ? uncopy() : copy()"
             ><v-icon :color="copied === true ? 'white' : 'red'"
               >mdi-share</v-icon
             ></v-btn
@@ -155,7 +155,7 @@ export default {
       liked: false,
       copied: false,
       likes: [],
-      sharableLink: "",
+      sharableLink: location.origin + window.location.pathname,
       currentDate: "",
       nextDate: "",
       previousDate: "",
@@ -168,11 +168,6 @@ export default {
           "Please enter the correct format",
       ],
     };
-  },
-  created: function () {
-    var currentUrl = window.location.pathname;
-    console.log(location.origin + currentUrl);
-    // console.log(this.$route.query.page);
   },
   computed: {
     imageStyleObject() {
@@ -192,6 +187,10 @@ export default {
     };
   },
   methods: {
+    copy() {
+      navigator.clipboard.writeText(this.sharableLink);
+      this.copied = true;
+    },
     like() {
       //this function is for saving likes in local storage
       console.log("liked");
