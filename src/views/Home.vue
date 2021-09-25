@@ -33,10 +33,24 @@
         </v-row>
 
         <v-row class="justify-center">
-          <v-btn fab outlined class="mx-2" @click="like"
-            ><v-icon>mdi-heart</v-icon></v-btn
+          <v-btn
+            :color="liked === true ? 'red' : 'white'"
+            fab
+            class="mx-2"
+            @click="liked === true ? dislike() : like()"
+            ><v-icon :color="liked === true ? 'white' : 'red'"
+              >mdi-heart</v-icon
+            ></v-btn
           >
-          <v-btn fab outlined class="mx-2"><v-icon>mdi-share</v-icon></v-btn>
+          <v-btn
+            :color="copied === true ? 'red' : 'white'"
+            fab
+            class="mx-2"
+            @click="copied === true ? copy : uncopy"
+            ><v-icon :color="copied === true ? 'white' : 'red'"
+              >mdi-share</v-icon
+            ></v-btn
+          >
         </v-row>
 
         <v-row>
@@ -92,10 +106,24 @@
         </v-row>
 
         <v-row class="justify-center">
-          <v-btn fab outlined class="mx-2" @click="like"
-            ><v-icon>mdi-heart</v-icon></v-btn
+          <v-btn
+            :color="liked === true ? 'red' : 'white'"
+            fab
+            class="mx-2"
+            @click="liked === true ? dislike() : like()"
+            ><v-icon :color="liked === true ? 'white' : 'red'"
+              >mdi-heart</v-icon
+            ></v-btn
           >
-          <v-btn fab outlined class="mx-2"><v-icon>mdi-share</v-icon></v-btn>
+          <v-btn
+            :color="copied === true ? 'red' : 'white'"
+            fab
+            class="mx-2"
+            @click="copied === true ? copy : uncopy"
+            ><v-icon :color="copied === true ? 'white' : 'red'"
+              >mdi-share</v-icon
+            ></v-btn
+          >
         </v-row>
 
         <v-row>
@@ -103,7 +131,7 @@
             ><v-icon>mdi-arrow-left</v-icon></v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn v-show='currentDate != date' fab outlined @click="gotoNextImage"
+          <v-btn fab outlined @click="gotoNextImage"
             ><v-icon>mdi-arrow-right</v-icon></v-btn
           >
         </v-row>
@@ -124,6 +152,10 @@ export default {
       copyright: "",
       explanation: "",
       mediaType: "",
+      liked: false,
+      copied: false,
+      likes: [],
+      sharableLink: "",
       currentDate: "",
       nextDate: "",
       previousDate: "",
@@ -137,6 +169,11 @@ export default {
       ],
     };
   },
+  created: function () {
+    var currentUrl = window.location.pathname;
+    console.log(currentUrl);
+    // console.log(this.$route.query.page);
+  },
   computed: {
     imageStyleObject() {
       return {
@@ -149,18 +186,53 @@ export default {
       };
     },
   },
+  getLiked() {
+    return {
+      liked: false,
+    };
+  },
   methods: {
     like() {
       //this function is for saving likes in local storage
       console.log("liked");
-      var likes = [];
-      likes = JSON.parse(localStorage.getItem("session")) || [];
-      // Push the new data (whether it be an object or anything else) onto the array
-      likes.push(this.currentDate);
-      //console log array values
-      console.log(likes);
-      // Re-serialize the array back into a string and store it in localStorage
-      localStorage.setItem("session", JSON.stringify(likes));
+      this.likes = JSON.parse(localStorage.getItem("likes")) || [];
+
+      // Check if a value exists in the likes array
+      if (this.likes.indexOf(this.currentDate) !== -1) {
+        //change heart color to red
+        this.liked = true;
+      } else {
+        // Push the new data (whether it be an object or anything else) onto the array
+        this.likes.push(this.currentDate);
+        //console log array values
+        console.log(this.likes);
+        // Re-serialize the array back into a string and store it in localStorage
+        localStorage.setItem("likes", JSON.stringify(this.likes));
+      }
+    },
+    dislike() {
+      //this function is for saving likes in local storage
+      console.log("disliked");
+      this.likes = JSON.parse(localStorage.getItem("likes")) || [];
+
+      // Check if a value exists in the likes array
+      if (this.likes.indexOf(this.currentDate) !== -1) {
+        //change heart color to white
+        this.liked = false;
+        // Push the new data (whether it be an object or anything else) onto the array
+        this.likes.slice(this.currentDate);
+        //console log array values
+        console.log(this.likes);
+        // Re-serialize the array back into a string and store it in localStorage
+        localStorage.setItem("likes", JSON.stringify(this.likes));
+      } else {
+        // Push the new data (whether it be an object or anything else) onto the array
+        // this.likes.splice(this.currentDate);
+        //console log array values
+        // console.log(this.likes);
+        // Re-serialize the array back into a string and store it in localStorage
+        // localStorage.setItem("likes", JSON.stringify(this.likes));
+      }
     },
     gotoNextImage() {
       this.nextDate = moment(this.currentDate)
