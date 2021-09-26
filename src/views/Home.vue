@@ -152,7 +152,7 @@ export default {
       copyright: "",
       explanation: "",
       mediaType: "",
-      liked: false,
+      liked: null,
       copied: false,
       likes: [],
       sharableLink: location.origin + window.location.pathname,
@@ -181,6 +181,14 @@ export default {
       };
     },
   },
+  // mounted() {
+  //   this.likes = JSON.parse(localStorage.getItem("likes")) || [];
+  //   if (this.likes.indexOf(this.currentDate) !== -1) {
+  //     this.liked = true;
+  //   } else {
+  //     this.liked = false;
+  //   }
+  // },
   methods: {
     copy() {
       navigator.clipboard.writeText(this.sharableLink);
@@ -236,6 +244,7 @@ export default {
         .format("YYYY-MM-DD");
       console.log(this.nextDate);
       this.currentDate = this.nextDate;
+      this.checkIfAlreadyLiked();
       this.getImage();
     },
     gotoPreviousImage() {
@@ -244,11 +253,13 @@ export default {
         .format("YYYY-MM-DD");
       console.log(this.previousDate);
       this.currentDate = this.previousDate;
+      this.checkIfAlreadyLiked();
       this.getImage();
     },
     getImage() {
       if (this.currentDate === "") {
         this.currentDate = moment(new Date()).format("YYYY-MM-DD");
+        this.checkIfAlreadyLiked();
         axios
           .get(
             `https://api.nasa.gov/planetary/apod?api_key=VyDJVVrBc0mpUB79AabFmB684E8gmJBNZPjikJCa&date=${this.currentDate}`
@@ -266,6 +277,7 @@ export default {
             console.log(error);
           });
       } else {
+        this.checkIfAlreadyLiked();
         axios
           .get(
             `https://api.nasa.gov/planetary/apod?api_key=VyDJVVrBc0mpUB79AabFmB684E8gmJBNZPjikJCa&date=${this.currentDate}`
