@@ -181,25 +181,27 @@ export default {
       };
     },
   },
-  getLiked() {
-    return {
-      liked: false,
-    };
-  },
   methods: {
     copy() {
       navigator.clipboard.writeText(this.sharableLink);
       this.copied = true;
     },
+    checkIfAlreadyLiked() {
+      this.likes = JSON.parse(localStorage.getItem("likes")) || [];
+      if (this.likes.indexOf(this.currentDate) !== -1) {
+        this.liked = true;
+      } else {
+        this.liked = false;
+      }
+    },
     like() {
       //this function is for saving likes in local storage
       console.log("liked");
       this.likes = JSON.parse(localStorage.getItem("likes")) || [];
-
       // Check if a value exists in the likes array
       if (this.likes.indexOf(this.currentDate) !== -1) {
         //change heart color to red
-        this.liked = true;
+        // this.liked = true;
       } else {
         // Push the new data (whether it be an object or anything else) onto the array
         this.likes.push(this.currentDate);
@@ -207,30 +209,25 @@ export default {
         console.log(this.likes);
         // Re-serialize the array back into a string and store it in localStorage
         localStorage.setItem("likes", JSON.stringify(this.likes));
+        //change heart color to red
+        this.liked = true;
       }
     },
     dislike() {
-      //this function is for saving likes in local storage
+      //this function is for disliking in local storage
       console.log("disliked");
       this.likes = JSON.parse(localStorage.getItem("likes")) || [];
-
       // Check if a value exists in the likes array
       if (this.likes.indexOf(this.currentDate) !== -1) {
-        //change heart color to white
-        this.liked = false;
-        // Push the new data (whether it be an object or anything else) onto the array
-        this.likes.slice(this.currentDate);
-        //console log array values
-        console.log(this.likes);
+        var index = this.likes.indexOf(this.currentDate);
+        this.likes.splice(index, 1);
         // Re-serialize the array back into a string and store it in localStorage
         localStorage.setItem("likes", JSON.stringify(this.likes));
+        //change heart color to white
+        this.liked = false;
       } else {
         // Push the new data (whether it be an object or anything else) onto the array
-        // this.likes.splice(this.currentDate);
-        //console log array values
-        // console.log(this.likes);
-        // Re-serialize the array back into a string and store it in localStorage
-        // localStorage.setItem("likes", JSON.stringify(this.likes));
+        // this.likes.push(this.currentDate);
       }
     },
     gotoNextImage() {
@@ -290,6 +287,7 @@ export default {
   },
   beforeMount() {
     this.getImage();
+    this.checkIfAlreadyLiked();
   },
 };
 </script>
